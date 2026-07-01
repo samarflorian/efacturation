@@ -11,26 +11,29 @@ Toutes les étapes (création du schéma, jeu de données de test et requêtes a
 
 ## 🛠️ Compétences SQL démontrées
 * **Modélisation de base de données (MPD) :** Création de tables avec clés primaires (`PRIMARY KEY`), intégrité référentielle (`FOREIGN KEY`) et auto-incrémentation.
-* **Sécurisation des données :** Utilisation de contraintes strictes (`CHECK`, `NOT NULL`, `UNIQUE`) pour garantir la cohérence des cycles de facturation et des modes de paiement.
+* **Sécurisation & Robustesse Comptable :** Utilisation de contraintes strictes (`CHECK`, `NOT NULL`, `UNIQUE`) et historisation des montants facturés pour figer les prix à l'émission face aux évolutions tarifaires futures.
 * **Optimisation financière :** Utilisation du type `DECIMAL` pour éviter les erreurs d'arrondis sur les flux monétaires.
-* **Algorithmique SQL :** Maîtrise des jointures multiples (`JOIN`), des agrégations complexes (`SUM`, `GROUP BY`), des tris (`ORDER BY`) et du filtrage de données.
+* **Algorithmique SQL Avancée :** Maîtrise des jointures multiples (`JOIN`), des agrégations (`SUM`, `GROUP BY`), des CTE (`WITH`), et des fonctions de fenêtrage (`OVER`, `RANK`, `PARTITION BY`).
 
 ---
 
 ## 📊 Modèle Physique de Données (MPD)
 Le système s'articule autour de 4 tables interconnectées :
 1. **`entreprises`** : Registre des clients B2B avec identification légale (SIRET à 14 caractères).
-2. **`plans_abonnement`** : Catalogue des offres et de leur tarification mensuelle.
-3. **`factures`** : Suivi des pièces comptables émises, des échéances et des statuts de paiement (`Payée`, `En attente`, `En retard`).
+2. **`plans_abonnement`** : Catalogue des offres et de leur tarification mensuelle actuelle.
+3. **`factures`** : Suivi des pièces comptables émises, des échéances, des statuts de paiement (`Payée`, `En attente`, `En retard`) et sauvegarde du prix historique facturé.
 4. **`paiements`** : Historique des transactions financières et des méthodes de règlement utilisées (`Virement`, `Carte`, `Prélèvement`).
 
 ---
 
-## 📈 Exemples d'analyses disponibles
+## 📈 Analyses Décisionnelles Incluses
 Le script de requêtes est structuré pour répondre à des problématiques business majeures :
-* **Suivi opérationnel :** Liste globale et croisée des factures avec l'identité client et le plan associé.
-* **Analyse de performance commerciale :** Calcul du chiffre d'affaires total encaissé, ventilé par type d'abonnement et trié par ordre décroissant de performance.
-* **Gestion du risque client (À venir) :** Identification des entreprises en défaut de paiement et calcul des montants cumulés des impayés à régulariser.
+* **Suivi opérationnel (R1) :** Liste globale et croisée des factures avec l'identité client et le plan associé.
+* **Analyse de performance commerciale (R2) :** Calcul du chiffre d'affaires total encaissé, ventilé par type d'abonnement (tri décroissant).
+* **Gestion du risque client / Balance âgée (R3) :** Identification des entreprises en défaut de paiement et calcul des montants cumulés des impayés à régulariser.
+* **Indicateurs de performance / KPI (R4) :** Calcul du délai moyen global (en jours) mis par les clients pour régler leurs factures.
+* **Part de marché interne (R5) :** Utilisation d'une fonction de fenêtrage (`SUM() OVER`) pour mesurer la contribution en % de chaque facture payée sur le chiffre d'affaires global.
+* **Analyse comparative des marchés (R6) :** Utilisation d'une CTE et de la fonction `RANK() OVER(PARTITION BY...)` pour isoler la plus grosse facture émise pour chaque pays.
 
 ---
 
